@@ -1,18 +1,20 @@
 --Nielsen
+--01.28.16 added in demo impression % info
 SELECT
-	tag_placement_id
-	, SUM(impressions) AS Imps
-	, SUM(reach) AS Reach
+    a.tag_placement_id 
+    , b.name
+    , SUM(impressions) -- % of total impressions for each demo calculated in excel
 FROM
-	raw_nielsen_campaign_placement 
+    raw_nielsen_campaign_placement a
+LEFT JOIN
+    dim_nielsen_demo_group b
+ON
+    a.demo_id = b.demo_id 
 WHERE 
-	site_id = 4574995 
-	AND campaign_data_date > '12/29/2015'
+    site_id = 4574995 
+    AND campaign_data_date > '12/29/2015'
 GROUP BY 
-	tag_placement_id
-HAVING
-	Imps > 0
-	AND Reach > 0;
+    a.tag_placement_id, b.name;
 
 ---------------------------------------------------------------------
 
