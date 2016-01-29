@@ -81,6 +81,10 @@ GROUP BY
 --1.28.16 Update: Added InViewRates for MRC and Group M
 SELECT 
       MT.domain
+      , CASE
+        WHEN avg_player_width < 400 THEN 1
+        ELSE 0
+        END AS small_player_count
     , SUM(viewability_measurable_impressions) AS viewability_measurable_impressions
     , SUM(mrc_view) AS mrc_view
     , SUM(groupm_view) AS groupm_view
@@ -97,6 +101,31 @@ HAVING
     SUM(viewability_measurable_impressions) > 0
     AND SUM(mrc_view) > 0
     AND SUM(groupm_view) > 0;
+
+--1.28.16 Update: Get player width and classify as small or "not small"
+SELECT COUNT(*) FROM (
+    
+    SELECT 
+          MT.domain
+          , SUM (CASE
+                WHEN avg_player_width < 400 THEN 1
+                ELSE 0
+            END) AS small_player_count
+          , SUM(viewability_measurable_impressions) AS viewability_measurable_impressions
+    FROM 
+        dwh.moat_viewability_pivot AS MT
+    LEFT JOIN 
+        dwh.vidible_dim_company_domains AS DCD
+    ON 
+        MT.domain = DCD.domain
+    WHERE 
+        datetime < GETDATE() - 1 
+        AND datetime > GETDATE() - 29   /*pull last 28d, excluding partial data today*/
+    GROUP BY
+          MT.domain
+    HAVING
+        SUM(viewability_measurable_impressions) > 100
+) spc
 
 
 
