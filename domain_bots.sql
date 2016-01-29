@@ -149,8 +149,14 @@ HAVING
 --moat
 =IF(ISERROR(MATCH(Master!A2,nielsen_domains!$A$2:$A$1344,0)), "", INDEX(nielsen_domains!$B$2:$B$1344, MATCH(Master!A2,nielsen_domains!$A$2:$A$1344,0)))
 
+---------------------------------------------------------------------
+--Excel tier rating in Master tab
 
-
+--FRAUD
+--if the value is less than 3%, then plat, if not, but less than 
+=IF(W2>Quality_Breakdown!C13,Quality_Breakdown!B10,IF(Master!W2<Quality_Breakdown!C13,Quality_Breakdown!C10,IF(Master!W2<Quality_Breakdown!D13,Quality_Breakdown!D10,IF(Master!W2<Quality_Breakdown!E13,Quality_Breakdown!E10,Quality_Breakdown!F10))))
+-- ADD DOLLAR SIGNS
+=IF(W2<
 
 
 
