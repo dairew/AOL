@@ -127,6 +127,28 @@ SELECT COUNT(*) FROM (
         SUM(viewability_measurable_impressions) > 100
 ) spc
 
+-- Get player width AND total player count (for % spc purposes)
+SELECT 
+      MT.domain
+      , SUM (CASE
+            WHEN avg_player_width < 400 THEN 1
+            ELSE 0
+        END) AS small_player_count
+      , COUNT(avg_player_width)
+      , SUM (viewability_measurable_impressions) AS viewability_measurable_impressions
+FROM 
+    dwh.moat_viewability_pivot AS MT
+LEFT JOIN 
+    dwh.vidible_dim_company_domains AS DCD
+ON 
+    MT.domain = DCD.domain
+WHERE 
+    datetime < GETDATE() - 1 
+    AND datetime > GETDATE() - 29   /*pull last 28d, excluding partial data today*/
+GROUP BY
+      MT.domain
+HAVING
+    SUM(viewability_measurable_impressions) > 5;
 
 
 ---------------------------------------------------------------------
