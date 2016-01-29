@@ -43,8 +43,6 @@ SELECT
     , SUM(ias_measurable) AS ias_measurable
     , SUM(ias_impressions_fraud) / SUM(ias_measurable) AS ias_impressions_fraud_rate 
 FROM dwh.vidible_performance_player AS PP
-LEFT JOIN dwh.vidible_dim_company_domains AS DCD
-    ON PP.domain = DCD.domain
 WHERE 
     PP.date < GETDATE() - 1 
     AND PP.date > GETDATE() - 2
@@ -67,8 +65,6 @@ SELECT
     , SUM(bots_q0)/(SUM(bots_q4) + SUM(bots_q3) + SUM(bots_q2) + SUM(bots_q1) + SUM(bots_q0)) AS perc_bots_q0
     , SUM(bots_q4)/(SUM(bots_q4) + SUM(bots_q3) + SUM(bots_q2) + SUM(bots_q1) + SUM(bots_q0)) AS perc_bots_q4
 FROM dwh.vidible_performance_player AS PP
-LEFT JOIN dwh.vidible_dim_company_domains AS DCD
-    ON PP.domain = DCD.domain
 WHERE 
     PP.date < GETDATE() - 1 
     AND PP.date > GETDATE() - 2
@@ -91,8 +87,6 @@ SELECT
     , SUM(groupm_view)/SUM(viewability_measurable_impressions) AS group_m_InViewRate
     , SUM(mrc_view)/SUM(viewability_measurable_impressions) AS mrc_InViewRate
 FROM dwh.moat_viewability_pivot AS MT
-LEFT JOIN dwh.vidible_dim_company_domains AS DCD
-    ON MT.domain = DCD.domain
 WHERE 
     datetime < GETDATE() - 1 AND datetime > GETDATE() - 29   /*pull last 28d, excluding partial data today*/
 GROUP BY
@@ -114,10 +108,6 @@ SELECT COUNT(*) FROM (
           , SUM(viewability_measurable_impressions) AS viewability_measurable_impressions
     FROM 
         dwh.moat_viewability_pivot AS MT
-    LEFT JOIN 
-        dwh.vidible_dim_company_domains AS DCD
-    ON 
-        MT.domain = DCD.domain
     WHERE 
         datetime < GETDATE() - 1 
         AND datetime > GETDATE() - 29   /*pull last 28d, excluding partial data today*/
@@ -138,10 +128,6 @@ SELECT
       , SUM (viewability_measurable_impressions) AS viewability_measurable_impressions
 FROM 
     dwh.moat_viewability_pivot AS MT
-LEFT JOIN 
-    dwh.vidible_dim_company_domains AS DCD
-ON 
-    MT.domain = DCD.domain
 WHERE 
     datetime < GETDATE() - 1 
     AND datetime > GETDATE() - 29   /*pull last 28d, excluding partial data today*/
