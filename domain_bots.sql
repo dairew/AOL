@@ -153,11 +153,17 @@ HAVING
 --Excel tier rating in Master tab
 
 --FRAUD
---if the value is less than 3%, then plat, if not, but less than 
-=IF(W2>Quality_Breakdown!C13,Quality_Breakdown!B10,IF(Master!W2<Quality_Breakdown!C13,Quality_Breakdown!C10,IF(Master!W2<Quality_Breakdown!D13,Quality_Breakdown!D10,IF(Master!W2<Quality_Breakdown!E13,Quality_Breakdown!E10,Quality_Breakdown!F10))))
--- ADD DOLLAR SIGNS
-=IF(W2<
+=IF(Master!X2 = "", "", IF(Master!X2<=Quality_Breakdown!$E$13, Quality_Breakdown!$E$10, IF(Master!X2<=Quality_Breakdown!$D$13,Quality_Breakdown!$D$10,
+    IF(Master!X2<=Quality_Breakdown!$C$13, Quality_Breakdown!$C$10, IF(Master!X2>Quality_Breakdown!$C$13, Quality_Breakdown!$B$10)))))
 
+--group_m_viewability
+=IF(Master!AB2 = "", "", IF(Master!AB2>=Quality_Breakdown!$E$12, Quality_Breakdown!$E$10, IF(Master!AB2>=Quality_Breakdown!$D$12,Quality_Breakdown!$D$10, IF(Master!AB2>=Quality_Breakdown!$C$12, Quality_Breakdown!$C$10, IF(Master!AB2<Quality_Breakdown!$C$12, Quality_Breakdown!$B$10)))))
+
+--mrc_viewability
+=IF(Master!AD2 = "", "", IF(Master!AD2>=Quality_Breakdown!$E$11, Quality_Breakdown!$E$10, IF(Master!AD2>=Quality_Breakdown!$D$11,Quality_Breakdown!$D$10, IF(Master!AD2>=Quality_Breakdown!$C$11, Quality_Breakdown!$C$10, IF(Master!AD2<Quality_Breakdown!$C$11, Quality_Breakdown!$B$10)))))
+
+--small player count
+=IF(Master!AH2 = "", "", IF(Master!AH2<=Quality_Breakdown!$E$14, Quality_Breakdown!$E$10, IF(Master!AH2<=Quality_Breakdown!$D$14,Quality_Breakdown!$D$10, IF(Master!AH2<=Quality_Breakdown!$C$14, Quality_Breakdown!$C$10, IF(Master!AH2>Quality_Breakdown!$C$14, Quality_Breakdown!$B$10)))))
 
 
 
