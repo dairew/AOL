@@ -1,5 +1,4 @@
-##Mark Query
-
+--Mark Query
 SELECT mediaplanlines.ss_mpli_id AS free_wheel_placement_id,
        mediaplanlines.mpli_seq_no,
        mediaplans.adt_mst_campg_id AS adt_master_campaign_id,
@@ -77,7 +76,7 @@ FROM eudm.mpseu_product_dim_v product
      INNER JOIN usdm.mps_timezone_dim_v tz
         ON flight.timezone_id = tz.timezone_id
 WHERE mediaplanlines.product_id IN (507286,507287,507278, 507706)
-##have to join usdm table - if that's what MSFT wants
+--have to join usdm table - if that's what MSFT wants (Canada, Japan, USA, respectively)
       AND usdm.mps_media_plan_lines_dim_v IN (36037,36039,36041,36043,36038,36040,36042,36044,
                                               36045,36046,36047,
                                               36048,36050,36052,36054,36049,36051,36053,36055)
