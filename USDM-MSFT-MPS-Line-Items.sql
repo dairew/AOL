@@ -1,48 +1,50 @@
 -- USDM Mark Query - MASTER
 
-SELECT mediaplanlines.ss_mpli_id AS free_wheel_placement_id,
-       mediaplanlines.mpli_seq_no,
-       mediaplans.adt_mst_campg_id AS ADT_Master_Campaign_id,
-       mediaplans.media_plan_id,
+SELECT mediaplanlines.ss_mpli_id AS free_wheel_placement_id, --choose name for this
+       mediaplanlines.mpli_seq_no AS SEQUENCENUMBER,
+       mediaplans.adt_mst_campg_id AS ADT_MASTER_CAMPAIGN_ID,
+       mediaplans.media_plan_id AS MEDIAPLANID,
        mediaplanlines.product_id,
        mediaplans.media_plan_name AS MEDIA_PLAN_NAME,
        mediaplanlines.mpli_name AS MEDIA_PLAN_LINE_NAME,
-       mediaplans.version,
-       mediaplans.industry_id,   
-       mediaplans.mps_adv_id,
-       mediaplans.agency_id,
-       mediaplans.flight_start_ts AS plan_start_date,
-       mediaplans.flight_end_ts AS plan_end_date,
-       mediaplans.currency_code_id,
-
-       -- Missing JAVATIMEZONEID
-
-       mediaplans.legal_status_id,
+       mediaplans.version AS VERSION,
+       mediaplans.industry_id AS INDUSTRYID,   
+       mediaplans.mps_adv_id AS ADVERTISERID,
+       mediaplans.agency_id AS AGENCYID,
+       mediaplans.flight_start_ts AS PLAN_START_DATE,
+       mediaplans.flight_end_ts AS PLAN_END_DATE,
+       mediaplans.currency_code_id AS CURRENCYCODEID,
+       CASE                            
+          WHEN tz.java_timezone = 'N/A' THEN 'Europe/Madrid'
+          ELSE tz.java_timezone
+       END
+        AS TIME_ZONE,
+       mediaplans.legal_status_id AS LEGALSTATUSID,
        CASE WHEN mediaplans.reporting_source_id = 4 THEN 'N' ELSE 'Y' END
-          AS third_party_stats_flg,
-       mediaplanlines.line_type,
-       mediaplans.governing_country_id,
-       flight.flt_start_ts AS line_start_date,
-       flight.flt_end_ts AS line_end_date,
-       mediaplanlines.rate_type_id,
-       flight.sold_rate AS rate,       
-       product.delivery_type_id,
-       'N' AS targeted_flg, 
+          AS THIRD_PARTY_STATUS_ID,
+       mediaplanlines.line_type AS LINETYPE,
+       mediaplans.governing_country_id AS GOVERNINGCOUNTRYID,
+       flight.flt_start_ts AS LINE_START_DATE,
+       flight.flt_end_ts AS LINE_END_DATE,
+       mediaplanlines.rate_type_id RATETYPEID,
+       flight.sold_rate AS RATE,       
+       product.delivery_type_id DELIVERYTYPEID,
+       'N' AS TARGETED_FLG, 
        CASE
           WHEN deliverytype.delivery_type_id IN (1, 2, 3) THEN 'Y'
           ELSE 'N'
        END                        
-          AS Reserved_flg,
+          AS RESERVED_FLG,
        CASE
           WHEN deliverytype.delivery_type_id IN (2, 3) THEN 'Y'
           ELSE 'N'
        END                         
-          AS SOV_flg,
+          AS SOV_FLG,
        CASE WHEN valuetype.value_type_id = 5 THEN 'Y' ELSE 'N' END
-          AS House_flg,
+          AS HOUSE_FLG,
        CASE WHEN valuetype.value_type_id IN (1, 2, 6) THEN 'Y' ELSE 'N' END
-          AS Paid_flg,
-       NULL AS normalizedrule,   
+          AS PAID_FLG,
+       NULL AS NORMALIZEDRULE,   
        CASE
           WHEN  PRODUCT.MEDIA_TYPE_ID IN (3, 10, 11, 14)
                 OR MEDIAPLANLINES.RATE_TYPE_ID = 12
@@ -51,7 +53,7 @@ SELECT mediaplanlines.ss_mpli_id AS free_wheel_placement_id,
           ELSE
              'N'
        END
-          AS is_view
+          AS IS_VIEW_FLG
   FROM usdm.mps_product_dim_v product
        INNER JOIN usdm.mps_delivery_type_dim_v deliverytype  
           ON deliverytype.delivery_type_id = product.delivery_type_id
