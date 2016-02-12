@@ -1,10 +1,9 @@
--- USDM Mark Query - MASTER
+-- USDM-MSFT-MPS-Line-Items Query - MASTER
 
-SELECT mediaplanlines.ss_mpli_id AS free_wheel_placement_id, --choose name for this
+SELECT mediaplanlines.ss_mpli_id AS ADT_CAMPAIGN_ID,
        mediaplanlines.mpli_seq_no AS SEQUENCENUMBER,
        mediaplans.adt_mst_campg_id AS ADT_MASTER_CAMPAIGN_ID,
        mediaplans.media_plan_id AS MEDIAPLANID,
-       mediaplanlines.product_id,
        mediaplans.media_plan_name AS MEDIA_PLAN_NAME,
        mediaplanlines.mpli_name AS MEDIA_PLAN_LINE_NAME,
        mediaplans.version AS VERSION,
@@ -54,26 +53,26 @@ SELECT mediaplanlines.ss_mpli_id AS free_wheel_placement_id, --choose name for t
              'N'
        END
           AS IS_VIEW_FLG
-  FROM usdm.mps_product_dim_v product
-       INNER JOIN usdm.mps_delivery_type_dim_v deliverytype  
-          ON deliverytype.delivery_type_id = product.delivery_type_id
-       INNER JOIN usdm.mps_media_plan_lines_dim_v mediaplanlines
-          ON (mediaplanlines.product_id = product.product_id)
-       INNER JOIN usdm.mps_media_plans_dim_v mediaplans
-          ON     (mediaplans.media_plan_id = mediaplanlines.media_plan_id)
-             AND (mediaplans.version = mediaplanlines.version)
-       INNER JOIN (SELECT media_plan_id, MAX (version) AS version 
-                     FROM usdm.mps_media_plans_dim_v 
-                    WHERE legal_status_id = 2            
-                   GROUP BY media_plan_id) max_plan
-          ON     mediaplanlines.media_plan_id = max_plan.media_plan_id
-             AND mediaplanlines.version = max_plan.version
-       INNER JOIN usdm.mps_flight_dim_v flight
-          ON (mediaplanlines.media_plan_line_id = flight.line_id)
-       INNER JOIN usdm.mps_value_type_dim_v valuetype        
-          ON valuetype.value_type_id = mediaplanlines.value_type_id
-       INNER JOIN usdm.mps_timezone_dim_v tz
-          ON flight.timezone_id = tz.timezone_id
+FROM usdm.mps_product_dim_v product
+     INNER JOIN usdm.mps_delivery_type_dim_v deliverytype  
+        ON deliverytype.delivery_type_id = product.delivery_type_id
+     INNER JOIN usdm.mps_media_plan_lines_dim_v mediaplanlines
+        ON (mediaplanlines.product_id = product.product_id)
+     INNER JOIN usdm.mps_media_plans_dim_v mediaplans
+        ON     (mediaplans.media_plan_id = mediaplanlines.media_plan_id)
+           AND (mediaplans.version = mediaplanlines.version)
+     INNER JOIN (SELECT media_plan_id, MAX (version) AS version 
+                   FROM usdm.mps_media_plans_dim_v 
+                  WHERE legal_status_id = 2            
+                 GROUP BY media_plan_id) max_plan
+        ON     mediaplanlines.media_plan_id = max_plan.media_plan_id
+           AND mediaplanlines.version = max_plan.version
+     INNER JOIN usdm.mps_flight_dim_v flight
+        ON (mediaplanlines.media_plan_line_id = flight.line_id)
+     INNER JOIN usdm.mps_value_type_dim_v valuetype        
+        ON valuetype.value_type_id = mediaplanlines.value_type_id
+     INNER JOIN usdm.mps_timezone_dim_v tz
+        ON flight.timezone_id = tz.timezone_id
 WHERE mpli_name LIKE '%VIDEO-MSFT%'
   AND mediaplanlines.is_deleted_flg = 'N'  
 ORDER BY line_start_date DESC;
